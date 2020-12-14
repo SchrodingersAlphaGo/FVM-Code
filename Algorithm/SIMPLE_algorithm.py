@@ -5,7 +5,7 @@ import sys
 
 #== parameters ===
 u_nodes_num = p_nodes_num =  5  # number of mesh cells or nodes
-alpha = 0.8  # under-relaxation factor
+alpha = 0.1  # under-relaxation factor
 nmax = 2000  # max number of iteration
 residual_criteria = 1e-6
 
@@ -71,7 +71,7 @@ print('initial p = ',pp)
 
 #== SIMPLE ALGORITHM ==
 
-for j in range(nmax):
+for j in range(201):
     ##== STEP 1 : solving momentum equations ==
     #== inlet ==
     i = 1
@@ -104,7 +104,6 @@ for j in range(nmax):
         uu[i] = aw/ai * uu[i-1] + dd[i] * (pp[i-1]-pp[i])  # up = aw/ap * uw + su/ap
                                                            #    = aw/ap * uw + d * Delta p
 
-    #print(uu[1:])
 
     ##== STEP 2: solving pressure correction equation ==
     for I in range(1,p_nodes_num-1):
@@ -118,7 +117,7 @@ for j in range(nmax):
         bb[i] = 0
 
     pp_correction = np.linalg.solve(Aap, bb)  # solve pressure correction equations
-    #print(pp_correction)
+
 
     ##== STEP 3: correct presure and velocity ==
     for i in range(1,u_nodes_num):
@@ -141,6 +140,7 @@ for j in range(nmax):
         
 
 print('mass flow rate = ', density*uu[-1]*area_i[-1])
+sys.exit()
 
 ##== exact solution ==
 nodes_excat = 50
